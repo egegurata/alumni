@@ -1,0 +1,41 @@
+{
+  "name": "alumni",
+  "version": "1.0.0",
+  "description": "Alumni Tracking System — Web Programming Project (MIS, Istanbul University) by Ege Gürkan Atalay",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "db:seed": "node scripts/seed.js",
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egegurata/alumni.git"
+  },
+  "keywords": [
+    "alumni",
+    "tracking-system",
+    "mvc",
+    "express",
+    "postgresql",
+    "rest-api",
+    "swagger",
+    "docker"
+  ],
+  "author": "Ege Gürkan Atalay <egegurkanatalay@ogr.iu.edu.tr>",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/egegurata/alumni/issues"
+  },
+  "homepage": "https://github.com/egegurata/alumni#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "pg": "^8.14.1",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

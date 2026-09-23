@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About · Alumni Tracking System</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --primary: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #475569;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand { font-weight: 800; font-size: 1.2rem; color: var(--primary); text-decoration: none; }
+    .nav-links { display: flex; gap: 1rem; }
+    .nav-links a { color: var(--text); text-decoration: none; font-size: 0.95rem; }
+    .container {
+      max-width: 850px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+    }
+    h1 { font-size: 2rem; margin-bottom: 1rem; color: var(--primary); }
+    h2 { font-size: 1.35rem; margin: 1.75rem 0 0.75rem; color: var(--text); }
+    p, li { color: var(--muted); margin-bottom: 0.75rem; }
+    ul { padding-left: 1.5rem; }
+    code {
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">🎓 IU MIS · Alumni Tracking System</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/users">Users</a>
+      <a href="/announcements">Announcements</a>
+      <a href="/jobs">Jobs</a>
+      <a href="/applications">Applications</a>
+      <a href="/api/swagger">Swagger</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>About the Alumni Tracking System</h1>
+    <p>
+      This system was architected and developed by <strong>Ege Gürkan Atalay</strong>
+      (<code>egegurkanatalay@ogr.iu.edu.tr</code>) for the <strong>Web Programming (YBSB3001)</strong>
+      course taught by Assoc. Prof. Dr. Emre Akadal at Istanbul University, Department of Management Information Systems (Fall 2026).
+    </p>
+
+    <h2>Architectural Highlights (Weeks 01–06)</h2>
+    <ul>
+      <li><strong>Week 01 (Inception &amp; Stack):</strong> Node.js (Express.js) back-end paired with PostgreSQL 16 in Docker Compose.</li>
+      <li><strong>Week 02 (Routing):</strong> Parameterized routes (<code>/hello</code>, <code>/hello/:name</code>, <code>/sum/:a/:b</code> with strict numeric validation returning <code>400 Bad Request</code> on non-numeric segments) and static pages.</li>
+      <li><strong>Week 03 (HTTP Verbs &amp; CRUD):</strong> Full RESTful CRUD on <code>/api/users</code> with <code>isAlumni</code> and <code>graduationYear</code> fields, <code>/api/health</code> with live uptime, <code>204 No Content</code> on delete, and interactive Swagger UI at <code>/api/swagger</code>.</li>
+      <li><strong>Week 04 (MVC Architecture):</strong> Strict separation between Models (data &amp; validation rules), Controllers (API &amp; Web), Views (HTML templates), and Routes, including the <code>Announcement</code> module.</li>
+      <li><strong>Week 05 (Database &amp; ORM / Persistence):</strong> PostgreSQL 16 service with a named Docker volume (<code>pgdata</code>), Database Design Document (<code>ddd.md</code>), SQL migrations, factories, idempotent seeder, and <code>409 Conflict</code> enforcement on duplicate emails.</li>
+      <li><strong>Week 06 (Relational Data &amp; Advanced Routing):</strong> One-to-Many <code>job_postings</code> and Many-to-Many <code>applications</code> join table, nested routes (<code>/api/users/:id/jobs</code>, <code>/api/jobs/:id/applications</code>), <code>LEFT JOIN</code> eager loading on <code>GET /api/users/:id</code>, and <code>ON DELETE CASCADE</code> integrity.</li>
+    </ul>
+  </main>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alumni Tracking System · Istanbul University MIS</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #334155;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #475569;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    nav {
+      background: rgba(30, 41, 59, 0.92);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand {
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.4rem 0.75rem;
+      border-radius: 0.5rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover {
+      background: var(--card);
+      color: var(--primary);
+    }
+    .hero {
+      max-width: 1100px;
+      margin: 3.5rem auto 2rem;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+    }
+    .subtitle {
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto 2.5rem;
+      font-size: 1.1rem;
+    }
+    .grid {
+      max-width: 1100px;
+      margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+    }
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.65rem;
+      color: var(--text);
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn {
+      display: inline-block;
+      text-align: center;
+      background: var(--primary);
+      color: #06281e;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.65rem 1.1rem;
+      border-radius: 0.5rem;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-hover); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .btn-outline:hover {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">🎓 IU MIS · Alumni Tracking System</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/users">Alumni &amp; Users</a>
+      <a href="/announcements">Announcements</a>
+      <a href="/jobs">Job Postings</a>
+      <a href="/applications">Applications</a>
+      <a href="/api/swagger">Swagger API</a>
+      <a href="/about">About</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <span class="badge">Istanbul University · Management Information Systems</span>
+    <h1>Alumni Tracking &amp; Career Network</h1>
+    <p class="subtitle">
+      A full-stack MVC web application with RESTful JSON endpoints, relational PostgreSQL persistence,
+      automated SQL migrations, and interactive OpenAPI documentation.
+    </p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <div>
+        <h3>👥 Alumni Directory</h3>
+        <p>Manage alumni and student profiles (`isAlumni`, `graduationYear`), inspect their published job postings, and execute full CRUD operations.</p>
+      </div>
+      <a href="/users" class="btn">Open Users Directory</a>
+    </div>
+
+    <div class="card">
+      <div>
+        <h3>📢 Announcements</h3>
+        <p>Publish and manage university bulletins, career fairs, and homecoming events across academic and alumni categories.</p>
+      </div>
+      <a href="/announcements" class="btn">Manage Announcements</a>
+    </div>
+
+    <div class="card">
+      <div>
+        <h3>💼 Job Postings (1:N)</h3>
+        <p>Explore career and internship opportunities posted by alumni (`users.id -> job_postings.user_id`) and apply directly.</p>
+      </div>
+      <a href="/jobs" class="btn">Browse Job Board</a>
+    </div>
+
+    <div class="card">
+      <div>
+        <h3>📝 Applications (M:N)</h3>
+        <p>Track candidate applications across job postings through the relational join table with composite uniqueness enforcement (`409 Conflict`).</p>
+      </div>
+      <a href="/applications" class="btn">View Applications</a>
+    </div>
+
+    <div class="card">
+      <div>
+        <h3>⚡ Swagger UI</h3>
+        <p>Inspect and test every REST API endpoint (`/api/users`, `/api/announcements`, `/api/jobs`, `/api/applications`) directly in the browser.</p>
+      </div>
+      <a href="/api/swagger" class="btn btn-outline">Launch Swagger UI</a>
+    </div>
+
+    <div class="card">
+      <div>
+        <h3>🩺 System Health &amp; Info</h3>
+        <p>Verify application uptime (`/api/health`) or read architectural details and developer information on the About page.</p>
+      </div>
+      <a href="/about" class="btn btn-outline">About This System</a>
+    </div>
+  </section>
+
+  <footer>
+    Built by <strong>Ege Gürkan Atalay</strong> · Department of Management Information Systems, Istanbul University · Fall 2026
+  </footer>
+</body>
+</html>
