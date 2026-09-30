@@ -1,0 +1,495 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Alumni Tracking System API",
+    "version": "1.0.0",
+    "description": "Comprehensive OpenAPI 3.0 specification for the Alumni Tracking System (Weeks 01–06). Built by Ege Gürkan Atalay (Department of Management Information Systems, Istanbul University).",
+    "contact": {
+      "name": "Ege Gürkan Atalay",
+      "email": "egegurkanatalay@ogr.iu.edu.tr",
+      "url": "https://github.com/egegurata/alumni"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local & Docker Development Server"
+    }
+  ],
+  "tags": [
+    { "name": "System & Routing", "description": "Week 02 & 03 health check and foundational routes" },
+    { "name": "Users (Alumni)", "description": "Week 03–06 RESTful CRUD for Alumni & Students (includes jobs array on GET /:id)" },
+    { "name": "Announcements", "description": "Week 04–05 RESTful CRUD for University & Alumni Office Announcements" },
+    { "name": "Job Postings (One-to-Many)", "description": "Week 06 Direct & Nested (/api/users/:id/jobs) Job Postings" },
+    { "name": "Applications (Many-to-Many)", "description": "Week 06 Direct & Nested (/api/jobs/:id/applications, /api/users/:id/applications) Job Applications" }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "tags": ["System & Routing"],
+        "summary": "Health check and process uptime",
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "example": { "status": "ok", "uptime": 42.185 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hello": {
+      "get": {
+        "tags": ["System & Routing"],
+        "summary": "Returns Hello, World!",
+        "responses": {
+          "200": { "description": "Greeting response" }
+        }
+      }
+    },
+    "/hello/{name}": {
+      "get": {
+        "tags": ["System & Routing"],
+        "summary": "Returns personalized greeting Hello, {name}!",
+        "parameters": [
+          { "name": "name", "in": "path", "required": true, "schema": { "type": "string" }, "example": "Emre" }
+        ],
+        "responses": {
+          "200": { "description": "Personalized greeting" }
+        }
+      }
+    },
+    "/sum/{a}/{b}": {
+      "get": {
+        "tags": ["System & Routing"],
+        "summary": "Adds two numeric path parameters",
+        "parameters": [
+          { "name": "a", "in": "path", "required": true, "schema": { "type": "number" }, "example": 3 },
+          { "name": "b", "in": "path", "required": true, "schema": { "type": "number" }, "example": 4 }
+        ],
+        "responses": {
+          "200": { "description": "Sum of a and b" },
+          "400": { "description": "Bad Request if either segment is not a valid number (e.g. /sum/3/banana)" }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["Users (Alumni)"],
+        "summary": "List all users and alumni",
+        "responses": {
+          "200": {
+            "description": "Array of user records",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/User" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users (Alumni)"],
+        "summary": "Create a new user (requires valid & unique email)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created user with assigned id" },
+          "400": { "description": "Bad Request (missing or invalid email)" },
+          "409": { "description": "Conflict (email already exists)" }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["Users (Alumni)"],
+        "summary": "Get a user by ID with their job postings included (LEFT JOIN)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "User object with jobs array inside" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "put": {
+        "tags": ["Users (Alumni)"],
+        "summary": "Replace a user record (full update)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Updated user" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "User not found" },
+          "409": { "description": "Duplicate email conflict" }
+        }
+      },
+      "patch": {
+        "tags": ["Users (Alumni)"],
+        "summary": "Partially update a user record (only sent fields)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Partially updated user" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "User not found" },
+          "409": { "description": "Duplicate email conflict" }
+        }
+      },
+      "delete": {
+        "tags": ["Users (Alumni)"],
+        "summary": "Delete a user by ID (cascades to job postings & applications)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content (user deleted)" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/users/{id}/jobs": {
+      "get": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "Nested route: list all job postings belonging to this user",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Array of user's job postings" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "post": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "Nested route: create a job posting for this user (user_id comes from URL)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JobPostingInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Job posting created for user" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/users/{id}/applications": {
+      "get": {
+        "tags": ["Applications (Many-to-Many)"],
+        "summary": "Nested route: list all job applications submitted by this user",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Array of user's applications" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/announcements": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "List all announcements",
+        "responses": {
+          "200": { "description": "Array of announcements" }
+        }
+      },
+      "post": {
+        "tags": ["Announcements"],
+        "summary": "Create a new announcement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnnouncementInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created announcement" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+    "/api/announcements/{id}": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "Get an announcement by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Announcement object" },
+          "404": { "description": "Announcement not found" }
+        }
+      },
+      "put": {
+        "tags": ["Announcements"],
+        "summary": "Update an announcement",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnnouncementInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Updated announcement" },
+          "404": { "description": "Announcement not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Announcements"],
+        "summary": "Partially update an announcement",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnnouncementInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Partially updated announcement" },
+          "404": { "description": "Announcement not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Announcements"],
+        "summary": "Delete an announcement",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "description": "Announcement not found" }
+        }
+      }
+    },
+    "/api/jobs": {
+      "get": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "List all job postings",
+        "responses": {
+          "200": { "description": "Array of job postings" }
+        }
+      },
+      "post": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "Create a new job posting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JobPostingInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created job posting" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/jobs/{id}": {
+      "get": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "Get a job posting by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Job posting object" },
+          "404": { "description": "Job posting not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "Partially update a job posting",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Updated job posting" },
+          "404": { "description": "Job posting not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Job Postings (One-to-Many)"],
+        "summary": "Delete a job posting",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "description": "Job posting not found" }
+        }
+      }
+    },
+    "/api/jobs/{id}/applications": {
+      "get": {
+        "tags": ["Applications (Many-to-Many)"],
+        "summary": "Nested route: list all applicants/applications for this job posting",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Array of applications for this job" },
+          "404": { "description": "Job posting not found" }
+        }
+      },
+      "post": {
+        "tags": ["Applications (Many-to-Many)"],
+        "summary": "Nested route: apply to a job posting (201 Created, 409 for duplicate, 404 if job or user unknown)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ApplicationInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Application created" },
+          "400": { "description": "Missing userId" },
+          "404": { "description": "Job posting or user not found" },
+          "409": { "description": "Conflict: user already applied to this job posting" }
+        }
+      }
+    },
+    "/api/applications": {
+      "get": {
+        "tags": ["Applications (Many-to-Many)"],
+        "summary": "List all applications",
+        "responses": {
+          "200": { "description": "Array of all applications" }
+        }
+      },
+      "post": {
+        "tags": ["Applications (Many-to-Many)"],
+        "summary": "Create a direct job application",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ApplicationInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Application created" },
+          "404": { "description": "User or job posting not found" },
+          "409": { "description": "Duplicate application conflict" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Ege Gürkan Atalay" },
+          "email": { "type": "string", "example": "egegurkanatalay@ogr.iu.edu.tr" },
+          "department": { "type": "string", "example": "Management Information Systems" },
+          "graduationYear": { "type": "integer", "example": 2028 },
+          "isAlumni": { "type": "boolean", "example": false },
+          "company": { "type": "string", "example": "Istanbul University MIS Lab" },
+          "jobTitle": { "type": "string", "example": "Backend Developer Fellow" }
+        }
+      },
+      "UserInput": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "name": { "type": "string", "example": "Elif Kaya" },
+          "email": { "type": "string", "example": "elif.kaya@alumni.iu.edu.tr" },
+          "department": { "type": "string", "example": "Management Information Systems" },
+          "graduationYear": { "type": "integer", "example": 2024 },
+          "isAlumni": { "type": "boolean", "example": true },
+          "company": { "type": "string", "example": "TechNova Cloud" },
+          "jobTitle": { "type": "string", "example": "Senior Systems Analyst" }
+        }
+      },
+      "AnnouncementInput": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "example": "Annual MIS Alumni Homecoming Summit 2026" },
+          "content": { "type": "string", "example": "Join us on campus for keynote speeches and networking." },
+          "category": { "type": "string", "enum": ["General", "Event", "Career", "Academic"], "example": "Event" },
+          "author": { "type": "string", "example": "MIS Alumni Office" },
+          "date": { "type": "string", "example": "2026-11-15" }
+        }
+      },
+      "JobPostingInput": {
+        "type": "object",
+        "required": ["title", "company"],
+        "properties": {
+          "user_id": { "type": "integer", "example": 2 },
+          "title": { "type": "string", "example": "Junior Backend Developer" },
+          "company": { "type": "string", "example": "TechNova Cloud" },
+          "location": { "type": "string", "example": "Istanbul (Hybrid)" },
+          "jobType": { "type": "string", "example": "Full-time" },
+          "description": { "type": "string", "example": "Build RESTful APIs with Node.js and PostgreSQL." }
+        }
+      },
+      "ApplicationInput": {
+        "type": "object",
+        "required": ["userId"],
+        "properties": {
+          "userId": { "type": "integer", "example": 1 },
+          "jobPostingId": { "type": "integer", "example": 1 },
+          "status": { "type": "string", "example": "applied" },
+          "coverNote": { "type": "string", "example": "Passionate about backend engineering." }
+        }
+      }
+    }
+  }
+}
